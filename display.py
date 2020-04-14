@@ -47,6 +47,7 @@ class DisplayDriver:
                 try:
                         self.__draw_frames()
                         self.__display_datetime()
+                        self.__display_outdoortemp()
                         self.__render_screen()
                         pygame.display.update()
                         print("Display update complete")
@@ -87,6 +88,12 @@ class DisplayDriver:
                                         if event.key == pygame.K_ESCAPE:
                                                 self.running = False
 
+        def __display_outdoortemp(self):
+                font = pygame.font.SysFont(self._font, int(self._ymax*(0.5-0.15)*0.9), bold=1)
+                temp = font.render("67", True, self._font_color)
+                (tx,ty) = temp.get_size()
+                self._screen.blit(temp, (self._borders[0]+10,int(self._ymax - ty - 10)))
+
         def __display_datetime(self):
                 th = 0.07     # Time Text Height
                 sh = 0.03     # Seconds Text Height
@@ -99,23 +106,23 @@ class DisplayDriver:
                 dfont = pygame.font.SysFont(self._font, int(self._ymax * dh), bold=1)  # Date Font
                 sfont = pygame.font.SysFont(self._font, int(self._ymax * sh), bold=1)  # Small Font for Seconds
 
-                tm1 = time.strftime("%H:%M", time.localtime())  # Time String
-                tm2 = time.strftime("%S", time.localtime())     # Seconds String
-                dt1 = time.strftime("%d %b %y").upper()         # Date String
+                tm1 = time.strftime( "%a, %b %d   %I:%M", time.localtime())
+                tm2 = time.strftime( "%S", time.localtime())
+                tm3 = time.strftime( " %P", time.localtime())
+
 
                 # Build the Date / Time
                 rtm1 = tfont.render(tm1, True, self._font_color)
                 (tx1, ty1) = rtm1.get_size()
                 rtm2 = sfont.render(tm2, True, self._font_color)
                 (tx2, ty2) = rtm2.get_size()
-                rdt1 = dfont.render(dt1, True, self._font_color)
-                (dx1, dy1) = rdt1.get_size()
+                rtm3 = tfont.render(tm3, True, self._font_color)
+                (tx3, ty3) = rtm3.get_size()
 
                 tp = self._xmax / 2 - (tx1 + tx2) / 2
-                dp = self._xmax - (dx1 + (self._borders[1] * 2))
                 self._screen.blit(rtm1, (tp, tm_y))
                 self._screen.blit(rtm2, (tp + tx1 + 3, tm_y_sm))
-                self._screen.blit(rdt1, (dp, dt_y))
+                self._screen.blit(rtm3, (tp+tx1+tx2, tm_y))
         
         def display_start(self):
                 """display_start is the main initializer for the display it makes calls to many other
@@ -186,7 +193,7 @@ class DisplayDriver:
                 hz = (0.1, 0.5, 0.58)
 
                 # Vertical line settings
-                vt = (0.33, 0.66, 0.2, 0.4, 0.6, 0.8)
+                vt = (0.33, 0.66,0.4, 0.6, 0.8)
 
                 self._screen.fill((0, 0, 0))
 
