@@ -2,7 +2,8 @@ import pygame
 import os
 import time
 import threading
-
+import weather
+import pytemperature;
 
 DEFAULT_DRIVERS = ('fbcon', 'directfb', 'svgalib', 'Quartz')
 DEFAULT_SIZE = (800, 480)
@@ -22,6 +23,7 @@ class DisplayDriver:
                 formats = {'no_frame': pygame.NOFRAME, 'full_screen': pygame.FULLSCREEN, 'double_buff': pygame.DOUBLEBUF,
                         'hw_surface': pygame.HWSURFACE, 'open_GL': pygame.OPENGL, 'resizable': pygame.RESIZABLE}
 
+                self.weatherObj = weather.Weather()
                 self._display_instance = None
                 self._drivers = drivers
                 self._size = size
@@ -54,7 +56,6 @@ class DisplayDriver:
                 except AssertionError as err:
                         print("Update Error + {}".format(str(err)))
 
-        
         def run(self, run_delay=209, interval=60):
                 self.display_start()
                 self.main_loop(run_delay)
@@ -89,10 +90,17 @@ class DisplayDriver:
                                                 self.running = False
 
         def __display_outdoortemp(self):
+                tempK = self.weatherObj.getCurrentWeather()
+                tempF = int(pytemperature.k2f(float(tempK)))
                 font = pygame.font.SysFont(self._font, int(self._ymax*(0.5-0.15)*0.9), bold=1)
-                temp = font.render("67", True, self._font_color)
+                temp = font.render(str(tempF), True, self._font_color)
                 (tx,ty) = temp.get_size()
-                self._screen.blit(temp, (self._borders[0]+10,int(self._ymax - ty - 10)))
+                ffont = pygame.font.SysFont(self._font, int(self._ymax*(0.5-0.15)*0.5), bold=1)
+                ftext = ffont.render(chr(0x2109), True, self._font_color)
+                (ftx, fty) = ftext.get_size()	
+	
+                self._screen.blit(temp, (self._borders[0]+20,int(self._ymax - ty - 10)))
+                self._screen.blit(ftext, (self._borders[0]+20+tx+10, int(self._ymax - ty)))
 
         def __display_datetime(self):
                 th = 0.07     # Time Text Height
