@@ -1,6 +1,7 @@
 import pygame
 import os
 import time
+import datetime
 import threading
 import weather
 import pytemperature;
@@ -50,6 +51,8 @@ class DisplayDriver:
                         self.__draw_frames()
                         self.__display_datetime()
                         self.__display_outdoortemp()
+                        self.__display_forecast()
+                        self.__display_gatestatus()
                         self.__render_screen()
                         pygame.display.update()
                         print("Display update complete")
@@ -88,7 +91,35 @@ class DisplayDriver:
                                 elif event.type == pygame.KEYDOWN:
                                         if event.key == pygame.K_ESCAPE:
                                                 self.running = False
+        def __display_forecast(self):
+                forecastobject = self.weatherObj.getForecast()
+                for i in range(len(forecastobject)):
+                        temprange = pygame.font.SysFont(self._font, int(self._ymax * 0.05), bold =1)
+                        rendertemprange = temprange.render(str(int(pytemperature.k2f(float(forecastobject[i]["high"]))))+"/"+str(int(pytemperature.k2f(float(forecastobject[i]["low"])))), True, self._font_color)
+                        displaytime = datetime.datetime.fromtimestamp(float(forecastobject[i]["date"])).strftime('%a')
+                        dayofweek = pygame.font.SysFont(self._font, int(self._ymax * 0.05), bold =1)
+                        renderdayofweek = dayofweek.render(displaytime, True, self._font_color)
 
+                        self._screen.blit(rendertemprange, ((self._xmax*0.4)+(self._xmax*0.2)*(i)+20,int(self._ymax - 50)))
+                        self._screen.blit(renderdayofweek, ((self._xmax*0.4)+(self._xmax*0.2)*(i)+20,int(self._ymax - 180 )))
+                        
+        def __display_gatestatus(self):
+                banner = pygame.font.SysFont(self._font, int(self._ymax * 0.07), bold=1)
+                renderbanner = banner.render("Gate Status", True, self._font_color)
+                (rtx, rty) = renderbanner.get_size()
+
+                gatestatus = pygame.font.SysFont(self._font, int(self._ymax * 0.07), bold = 1)
+                rendergatestatus = gatestatus.render("Closed", True, self._font_color)
+                (rgtx, rgty) = rendergatestatus.get_size()
+
+                timestatus = pygame.font.SysFont(self._font, int(self._ymax * 0.05), bold=1)
+                rendertimestatus = timestatus.render("at 04-16 7:35 pm", True, self._font_color)
+                (rtsx, rtsy) = rendertimestatus.get_size()
+                
+                self._screen.blit(renderbanner, (self._borders[0]+(self._xmax*0.16-(int(rtx/2))), int(self._ymax*0.1)+5))
+                self._screen.blit(rendergatestatus, (self._borders[0]+(self._xmax*0.16-(rgtx/2)), int(self._ymax*0.25)))
+                self._screen.blit(rendertimestatus, (self._borders[0]+(self._xmax*0.16-(rtx/2)), int(self._ymax*0.25)+65))
+               
         def __display_outdoortemp(self):
                 tempK = self.weatherObj.getCurrentWeather()
                 tempF = int(pytemperature.k2f(float(tempK)))
@@ -98,9 +129,14 @@ class DisplayDriver:
                 ffont = pygame.font.SysFont(self._font, int(self._ymax*(0.5-0.15)*0.5), bold=1)
                 ftext = ffont.render(chr(0x2109), True, self._font_color)
                 (ftx, fty) = ftext.get_size()	
+
+                text = pygame.font.SysFont(self._font, int(self._ymax * 0.07), bold=1)
+                rendertext = text.render("Outdoor", True, self._font_color)
+                (rtx, rty) = rendertext.get_size()
 	
-                self._screen.blit(temp, (self._borders[0]+20,int(self._ymax - ty - 10)))
-                self._screen.blit(ftext, (self._borders[0]+20+tx+10, int(self._ymax - ty)))
+                self._screen.blit(rendertext, (self._borders[0]+(self._xmax*0.16-(int(rtx/2))), int(self._ymax - ty - 30)))
+                self._screen.blit(temp, (self._borders[0]+30,int(self._ymax - ty - 10)))
+                self._screen.blit(ftext, (self._borders[0]+20+tx+15, int(self._ymax - ty)))
 
         def __display_datetime(self):
                 th = 0.07     # Time Text Height
