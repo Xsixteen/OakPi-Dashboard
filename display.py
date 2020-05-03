@@ -4,7 +4,9 @@ import time
 import datetime
 import threading
 import weather
-import pytemperature;
+import pytemperature
+import gatestatus
+import settings
 
 DEFAULT_DRIVERS = ('fbcon', 'directfb', 'svgalib', 'Quartz')
 DEFAULT_SIZE = (800, 480)
@@ -13,7 +15,7 @@ DEFAULT_SCREEN = 'resizable'
 class DisplayDriver:
 
         def __init__(self, drivers=DEFAULT_DRIVERS, size=DEFAULT_SIZE, screen_type=DEFAULT_SCREEN, borders=(5, 5),
-                 border_width=3, line_color=(255, 255, 255), font='freesans', font_color=(255, 255, 255)): #,icons=ICON_DICTIONARY):
+                 border_width=3, line_color=(255, 255, 255), font='freesans', font_color=(255, 255, 255)):
                 """DisplayDriver class is the class that build the base display for use in the weather
                 app.  Argument descriptions: drivers is a tuple of strings with available SDL_VIDEODRIVER
                 environmental varaibles; size is a tuple of two integers describing the x, y size of the
@@ -25,6 +27,7 @@ class DisplayDriver:
                         'hw_surface': pygame.HWSURFACE, 'open_GL': pygame.OPENGL, 'resizable': pygame.RESIZABLE}
 
                 self.weatherObj = weather.Weather()
+                self.gatestatusObj = gatestatus.GateStatus();
                 self._display_instance = None
                 self._drivers = drivers
                 self._size = size
@@ -34,8 +37,6 @@ class DisplayDriver:
                 self._font = font
                 self._font_color = font_color
                 self._format = formats[screen_type]
-                # self._icons = icons
-                # self._base_dir = os.getcwd() + ICON_BASE_DIR
                 self._scale_icons = True
                 self._xmax = self._size[0] - self._borders[0]
                 self._ymax = self._size[1] - self._borders[1]
@@ -99,26 +100,35 @@ class DisplayDriver:
                         displaytime = datetime.datetime.fromtimestamp(float(forecastobject[i]["date"])).strftime('%a')
                         dayofweek = pygame.font.SysFont(self._font, int(self._ymax * 0.05), bold =1)
                         renderdayofweek = dayofweek.render(displaytime, True, self._font_color)
+                        iconref = str(forecastobject[i]["icon"])
+                        if iconref in settings.icon_map:
+                                icon = pygame.image.load_extended(settings.ICON_BASE_DIR + settings.icon_map[iconref])
+                                self._screen.blit(icon, ((self._xmax*0.4)+(self._xmax*0.2)*(i)+50,int(self._ymax - 130)))
 
-                        self._screen.blit(rendertemprange, ((self._xmax*0.4)+(self._xmax*0.2)*(i)+20,int(self._ymax - 50)))
-                        self._screen.blit(renderdayofweek, ((self._xmax*0.4)+(self._xmax*0.2)*(i)+20,int(self._ymax - 180 )))
+                        self._screen.blit(rendertemprange, ((self._xmax*0.4)+(self._xmax*0.2)*(i)+50,int(self._ymax - 50)))
+                        self._screen.blit(renderdayofweek, ((self._xmax*0.4)+(self._xmax*0.2)*(i)+50,int(self._ymax - 180 )))
                         
         def __display_gatestatus(self):
                 banner = pygame.font.SysFont(self._font, int(self._ymax * 0.07), bold=1)
                 renderbanner = banner.render("Gate Status", True, self._font_color)
                 (rtx, rty) = renderbanner.get_size()
-
+                
+                GATESTATUS = self.gatestatusObj.getGateStatus();
                 gatestatus = pygame.font.SysFont(self._font, int(self._ymax * 0.07), bold = 1)
-                rendergatestatus = gatestatus.render("Closed", True, self._font_color)
+                if GATESTATUS["gatestatus"] == '"CLOSE"' :
+                        commonText = "Closed"
+                else:
+                        commonText = "Open"
+                rendergatestatus = gatestatus.render(commonText, True, self._font_color)
                 (rgtx, rgty) = rendergatestatus.get_size()
 
-                timestatus = pygame.font.SysFont(self._font, int(self._ymax * 0.05), bold=1)
-                rendertimestatus = timestatus.render("at 04-16 7:35 pm", True, self._font_color)
+                timestatus = pygame.font.SysFont(self._font, int(self._ymax * 0.04), bold=1)
+                rendertimestatus = timestatus.render("at " +datetime.datetime.fromtimestamp(float(GATESTATUS["time"])/1000).strftime('%I:%M %p on %b %-d'), True, self._font_color)
                 (rtsx, rtsy) = rendertimestatus.get_size()
                 
                 self._screen.blit(renderbanner, (self._borders[0]+(self._xmax*0.16-(int(rtx/2))), int(self._ymax*0.1)+5))
                 self._screen.blit(rendergatestatus, (self._borders[0]+(self._xmax*0.16-(rgtx/2)), int(self._ymax*0.25)))
-                self._screen.blit(rendertimestatus, (self._borders[0]+(self._xmax*0.16-(rtx/2)), int(self._ymax*0.25)+65))
+                self._screen.blit(rendertimestatus, (self._borders[0]+(self._xmax*0.16-(rtx/2)-8), int(self._ymax*0.25)+65))
                
         def __display_outdoortemp(self):
                 tempK = self.weatherObj.getCurrentWeather()
