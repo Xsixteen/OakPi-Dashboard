@@ -7,6 +7,7 @@ import weather
 import pytemperature
 import gatestatus
 import settings
+import os
 
 DEFAULT_DRIVERS = ('fbcon', 'directfb', 'svgalib', 'Quartz')
 DEFAULT_SIZE = (800, 480)
@@ -44,6 +45,7 @@ class DisplayDriver:
                 self._av_time = 1
                 self._screen = None
                 self._blits = []
+                self._refresh_icon = None
                 self.running = True
                 self.current_date = None
 
@@ -53,12 +55,24 @@ class DisplayDriver:
                         self.__display_datetime()
                         self.__display_outdoortemp()
                         self.__display_forecast()
-                        self.__display_gatestatus()
                         self.__render_screen()
+                        self.__render_gateimage()
+                        self.__draw_buttons()
                         pygame.display.update()
                         print("Display update complete")
                 except AssertionError as err:
                         print("Update Error + {}".format(str(err)))
+
+        def __render_gateimage(self):
+                gateimg = pygame.image.load('./images/latest_image.jpg')
+                gateimg_small = pygame.transform.scale(gateimg, (320, 180))
+  
+                self._screen.blit(gateimg_small,(int((self._xmax*0.33+5)),int(self._borders[0]+45)))
+
+        def __draw_buttons(self):
+                refresh = pygame.image.load('./icons/refresh.png')
+                self._refresh_icon = pygame.transform.scale(refresh, (64, 64))
+                self._screen.blit(self._refresh_icon,(int((self._xmax*0.33+350)),int(self._borders[0]+150)))
 
         def run(self, run_delay=209, interval=60):
                 self.display_start()
@@ -92,6 +106,9 @@ class DisplayDriver:
                                 elif event.type == pygame.KEYDOWN:
                                         if event.key == pygame.K_ESCAPE:
                                                 self.running = False
+                                elif event.type == pygame.MOUSEBUTTONUP:
+                                        os.system("python3.6 fetch.py single")
+
         def __display_forecast(self):
                 forecastobject = self.weatherObj.getForecast()
                 for i in range(len(forecastobject)):
@@ -147,6 +164,11 @@ class DisplayDriver:
                 self._screen.blit(rendertext, (self._borders[0]+(self._xmax*0.16-(int(rtx/2))), int(self._ymax - ty - 30)))
                 self._screen.blit(temp, (self._borders[0]+30,int(self._ymax - ty - 10)))
                 self._screen.blit(ftext, (self._borders[0]+20+tx+15, int(self._ymax - ty)))
+
+                precip = pygame.font.SysFont(self._font, int(self._ymax * 0.07), bold=1)
+                renderPrecip = precip.render("Precipitation:", True, self._font_color)
+                (rtx, rty) = renderPrecip.get_size()
+                self._screen.blit(renderPrecip, (self._borders[0]+(self._xmax*0.16-(int(rtx/2))), int(self._ymax*0.1)+5))
 
         def __display_datetime(self):
                 th = 0.07     # Time Text Height
@@ -263,7 +285,7 @@ class DisplayDriver:
                         pygame.draw.line(self._screen, self._line_color, (xmin, ymax * h), (xmax, ymax * h), line_width)
 
                 # Vertical lines (1, 2)
-                for j in range(2):
+                for j in range(1):
                         v = vt[j]
                         pygame.draw.line(self._screen, self._line_color, (xmax * v, ymax * hz[2]),
                                         (xmax * v, ymax * hz[0]), line_width)
