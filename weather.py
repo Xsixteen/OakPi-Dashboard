@@ -19,6 +19,12 @@ class Weather:
                         jsonData = json.loads(r.text)
                         jsonMain = jsonData["main"]
                         jsonTempK = jsonMain["temp"]
+
+                        if not 'rain' in jsonData or len(jsonData['rain']) == 0:
+                                print("No Rain Precip detected")
+                        else:
+                                jsonRain = jsonData["rain"]
+                                self.rain3h = jsonRain["3h"]
                         self.lasttemp = json.dumps(jsonTempK)
                         self.nextupdate = int(time.time()) + (60 * 10)
                         print("Next API Update",self.nextupdate)
