@@ -1,4 +1,6 @@
-api_key= <secret removed>
+api_key= '<secret removed>'
+city='berkley'
+blink_app='~/app/blink/blink.py'
 ICON_TYPES = ['.png']
 ICON_BASE_DIR = './icons/'
 
