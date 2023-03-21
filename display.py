@@ -9,7 +9,7 @@ import gatestatus
 import settings
 import os
 
-DEFAULT_DRIVERS = ('fbcon', 'directfb', 'svgalib', 'Quartz')
+DEFAULT_DRIVERS = ('fbcon', 'directfb', 'svgalib', 'Quartz', 'x11')
 DEFAULT_SIZE = (800, 480)
 DEFAULT_SCREEN = 'resizable'
 
