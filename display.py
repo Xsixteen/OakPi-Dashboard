@@ -108,7 +108,7 @@ class DisplayDriver:
                                                 self.running = False
                                 elif event.type == pygame.MOUSEBUTTONUP:
                                         print("Updating Image")
-                                        os.system("python3 " + settings.blink_app + "./images/latest_image.jpg")
+                                        os.system("python3 " + settings.blink_app + " ./images/latest_image.jpg")
 
         def __display_forecast(self):
                 forecastobject = self.weatherObj.getForecast()
