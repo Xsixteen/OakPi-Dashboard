@@ -8,6 +8,7 @@ import pytemperature
 import gatestatus
 import settings
 import os
+import power
 
 DEFAULT_DRIVERS = ('fbcon', 'directfb', 'svgalib', 'Quartz', 'x11')
 DEFAULT_SIZE = (800, 480)
@@ -29,6 +30,7 @@ class DisplayDriver:
 
                 self.weatherObj = weather.Weather()
                 self.gatestatusObj = gatestatus.GateStatus();
+                self.powerObj = power.Power()
                 self._display_instance = None
                 self._drivers = drivers
                 self._size = size
@@ -58,6 +60,7 @@ class DisplayDriver:
                         self.__render_screen()
                         self.__render_gateimage()
                         self.__draw_buttons()
+                        self.__display_power()
                         pygame.display.update()
                         print("Display update complete")
                 except AssertionError as err:
@@ -165,11 +168,24 @@ class DisplayDriver:
                 self._screen.blit(rendertext, (self._borders[0]+(self._xmax*0.16-(int(rtx/2))), int(self._ymax - ty - 30)))
                 self._screen.blit(temp, (self._borders[0]+30,int(self._ymax - ty - 10)))
                 self._screen.blit(ftext, (self._borders[0]+20+tx+15, int(self._ymax - ty)))
+                
+                # Hold off for now
+                # precip = pygame.font.SysFont(self._font, int(self._ymax * 0.07), bold=1)
+                # renderPrecip = precip.render("Precipitation:", True, self._font_color)
+                # (rtx, rty) = renderPrecip.get_size()
+                #self._screen.blit(renderPrecip, (self._borders[0]+(self._xmax*0.16-(int(rtx/2))), int(self._ymax*0.1)+5))
 
-                precip = pygame.font.SysFont(self._font, int(self._ymax * 0.07), bold=1)
-                renderPrecip = precip.render("Precipitation:", True, self._font_color)
-                (rtx, rty) = renderPrecip.get_size()
-                self._screen.blit(renderPrecip, (self._borders[0]+(self._xmax*0.16-(int(rtx/2))), int(self._ymax*0.1)+5))
+        def __display_power(self):
+                self.power = self.powerObj.getCurrentPower()
+                powerText = pygame.font.SysFont(self._font, int(self._ymax * 0.07), bold=1)
+
+                if(self.power.currentPower > 1000 ) :
+                        renderPowerText = powerText.render("Current Power: " + (self.currentPower.currentPower / 1000) + " KW", True, self._font_color)
+                else:
+                        renderPowerText = powerText.render("Current Power: " + self.currentPower.currentPower + " Watts", True, self._font_color)
+
+                (rtx, rty) = renderPowerText.get_size()
+                self._screen.blit(renderPowerText, (self._borders[0]+(self._xmax*0.16-(int(rtx/2))), int(self._ymax*0.1)+5))
 
         def __display_datetime(self):
                 th = 0.07     # Time Text Height
