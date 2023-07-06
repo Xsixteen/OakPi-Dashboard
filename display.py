@@ -177,15 +177,23 @@ class DisplayDriver:
 
         def __display_power(self):
                 self.power = self.powerObj.getCurrentPower()
-                powerText = pygame.font.SysFont(self._font, int(self._ymax * 0.07), bold=1)
+                powerText = pygame.font.SysFont(self._font, int(self._ymax * 0.05), bold=1)
+                powerBanner = pygame.font.SysFont(self._font, int(self._ymax * 0.05), bold=1)
 
                 if(self.power.currentPower > 1000 ) :
-                        renderPowerText = powerText.render("Current Power: " + (self.currentPower.currentPower / 1000) + " KW", True, self._font_color)
+                        kilowatts = str(round((self.power.currentPower/1000), 2))
+                        renderPowerText = powerText.render(kilowatts + " KW", True, self._font_color)
                 else:
-                        renderPowerText = powerText.render("Current Power: " + self.currentPower.currentPower + " Watts", True, self._font_color)
+                        watts = int(self.power.currentPower)
+                        renderPowerText = powerText.render(str(watts) + " Watts", True, self._font_color)
+
+
+                renderPowerBanner = powerBanner.render("Current Power:", True, self._font_color)
+                (rtx, rty) = renderPowerBanner.get_size()
+                self._screen.blit(renderPowerBanner, (self._borders[0]+(self._xmax*0.16-(int(rtx/2))), int(self._ymax*0.1)+5))
 
                 (rtx, rty) = renderPowerText.get_size()
-                self._screen.blit(renderPowerText, (self._borders[0]+(self._xmax*0.16-(int(rtx/2))), int(self._ymax*0.1)+5))
+                self._screen.blit(renderPowerText, (self._borders[0]+(self._xmax*0.16-(int(rtx/2))), int(self._ymax*0.1)+30))
 
         def __display_datetime(self):
                 th = 0.07     # Time Text Height
