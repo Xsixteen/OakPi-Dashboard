@@ -19,6 +19,6 @@ class Power:
                         self.currentPower = jsonData["currentPowerUsageWatts"]
                         self.currentPowerUpdateTime = jsonData["updateTime"]
                  
-                        self.nextupdate = int(time.time()) + (60 * 10)
+                        self.nextupdate = int(time.time()) + (60 * 1)
                         print("Next API Update",self.nextupdate)
                 return self
