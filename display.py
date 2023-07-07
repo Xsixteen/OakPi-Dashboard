@@ -166,8 +166,8 @@ class DisplayDriver:
                 (rtx, rty) = rendertext.get_size()
 	
                 self._screen.blit(rendertext, (self._borders[0]+(self._xmax*0.16-(int(rtx/2))), int(self._ymax - ty - 30)))
-                self._screen.blit(temp, (self._borders[0]+30,int(self._ymax - ty - 10)))
-                self._screen.blit(ftext, (self._borders[0]+20+tx+15, int(self._ymax - ty)))
+                self._screen.blit(temp, (self._borders[0]+30,int(self._ymax - ty)))
+                self._screen.blit(ftext, (self._borders[0]+20+tx+15, int(self._ymax - ty + 5)))
                 
                 # Hold off for now
                 # precip = pygame.font.SysFont(self._font, int(self._ymax * 0.07), bold=1)
@@ -188,7 +188,7 @@ class DisplayDriver:
                         renderPowerText = powerText.render(str(watts) + " Watts", True, self._font_color)
 
 
-                renderPowerBanner = powerBanner.render("Current Power:", True, self._font_color)
+                renderPowerBanner = powerBanner.render("Current Power Usage:", True, self._font_color)
                 (rtx, rty) = renderPowerBanner.get_size()
                 self._screen.blit(renderPowerBanner, (self._borders[0]+(self._xmax*0.16-(int(rtx/2))), int(self._ymax*0.1)+5))
 
