@@ -128,7 +128,17 @@ class DisplayDriver:
 
                         self._screen.blit(rendertemprange, ((self._xmax*0.4)+(self._xmax*0.2)*(i)+50,int(self._ymax - 50)))
                         self._screen.blit(renderdayofweek, ((self._xmax*0.4)+(self._xmax*0.2)*(i)+50,int(self._ymax - 180 )))
-                        
+
+                
+                sunsetText = pygame.font.SysFont(self._font, int(self._ymax * 0.05), bold=1)
+
+                sunsetTime = time.strftime('%H:%M', time.localtime(self.weatherObj.getSunset()))
+
+                renderSunset = sunsetText.render("Sunset: " + sunsetTime, True, self._font_color)
+
+                (rtx, rty) = sunsetText.get_size()
+                self._screen.blit(renderSunset, (self._borders[0]+(self._xmax*0.16-(int(rtx/2))), int(self._ymax*0.1)+45))
+
         def __display_gatestatus(self):
                 banner = pygame.font.SysFont(self._font, int(self._ymax * 0.07), bold=1)
                 renderbanner = banner.render("Gate Status", True, self._font_color)
@@ -188,7 +198,7 @@ class DisplayDriver:
                         renderPowerText = powerText.render(str(watts) + " Watts", True, self._font_color)
 
 
-                renderPowerBanner = powerBanner.render("Current Power Usage:", True, self._font_color)
+                renderPowerBanner = powerBanner.render("Power Usage:", True, self._font_color)
                 (rtx, rty) = renderPowerBanner.get_size()
                 self._screen.blit(renderPowerBanner, (self._borders[0]+(self._xmax*0.16-(int(rtx/2))), int(self._ymax*0.1)+5))
 

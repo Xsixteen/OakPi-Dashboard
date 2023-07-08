@@ -9,6 +9,7 @@ class Weather:
                 self.lasttemp = None
                 self.lastforecast = None
                 self.forecastupdate = -1
+                self.sunsettime = -1
 
         def getCurrentWeather(self):
                 currentWeatherURL = "http://api.openweathermap.org/data/2.5/weather"
@@ -51,6 +52,10 @@ class Weather:
                         output.append({'date': json.dumps(jsonData['daily'][2]['dt']), 'high' : json.dumps(jsonData['daily'][2]['temp']['max']), 'low':json.dumps(jsonData['daily'][2]['temp']['min']), 'icon':json.dumps(jsonData['daily'][2]['weather'][0]['main'])})
                         self.lastforecast = output 
                         self.forecastupdate = int(time.time()) + (60 * 60)
+                        self.sunsettime = jsonData['current']['sunset']
                         print("Next Forecast API Update",self.forecastupdate)
                         print(json.dumps(output))
                 return self.lastforecast
+
+        def getSunset(self):
+                return self.sunsettime
