@@ -136,7 +136,7 @@ class DisplayDriver:
 
                 renderSunset = sunsetText.render("Sunset: " + sunsetTime, True, self._font_color)
 
-                (rtx, rty) = sunsetText.get_size()
+                (rtx, rty) = renderSunset.get_size()
                 self._screen.blit(renderSunset, (self._borders[0]+(self._xmax*0.16-(int(rtx/2))), int(self._ymax*0.1)+45))
 
         def __display_gatestatus(self):
