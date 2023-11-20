@@ -190,13 +190,15 @@ class DisplayDriver:
                 powerText = pygame.font.SysFont(self._font, int(self._ymax * 0.05), bold=1)
                 powerBanner = pygame.font.SysFont(self._font, int(self._ymax * 0.05), bold=1)
 
-                if(self.power.currentPower > 1000 ) :
+                if(int(self.power.currentPower) > 1000 ) :
                         kilowatts = str(round((self.power.currentPower/1000), 2))
                         renderPowerText = powerText.render(kilowatts + " KW", True, self._font_color)
                 else:
                         watts = int(self.power.currentPower)
                         renderPowerText = powerText.render(str(watts) + " Watts", True, self._font_color)
-
+                stalePower = int(time.time()) + (60 * 10)
+                if int(self.power.currentPowerEpochTimeSeconds) > stalePower :
+                        renderPowerText = powerText.render(" - ", True, self._font_color)
 
                 renderPowerBanner = powerBanner.render("Power Usage:", True, self._font_color)
                 (rtx, rty) = renderPowerBanner.get_size()
