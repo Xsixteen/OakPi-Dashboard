@@ -13,7 +13,10 @@ class Power:
                 powerURL = "http://192.168.50.100:8080/api/v1/currentpower"
                 if self.nextupdate < time.time():
                         print("Updating Power information from API")
-                        r = requests.get(url = powerURL) 
+                        try:
+                                r = requests.get(url = powerURL) 
+                        except requests.exceptions.RequestException as e:
+                                print ("Error due to:", e) 
                         jsonData = json.loads(r.text)
 
                         self.currentPower = jsonData["currentPowerUsageWatts"]
