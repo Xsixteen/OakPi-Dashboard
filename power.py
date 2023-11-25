@@ -8,6 +8,7 @@ class Power:
                 self.nextupdate = -1
                 self.currentPower = None
                 self.forecastupdate = -1
+                self.currentPowerEpochTimeSeconds = -1
 
         def getCurrentPower(self):
                 powerURL = "http://192.168.50.100:8080/api/v1/currentpower"
@@ -21,7 +22,8 @@ class Power:
 
                         self.currentPower = jsonData["currentPowerUsageWatts"]
                         self.currentPowerUpdateTime = jsonData["updateTime"]
-                 
+                        self.currentPowerEpochTimeSeconds = jsonData["epochSeconds"]
+ 
                         self.nextupdate = int(time.time()) + (60 * 1)
                         print("Next API Update",self.nextupdate)
                 return self
