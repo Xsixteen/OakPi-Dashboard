@@ -18,6 +18,7 @@ class Power:
                                 r = requests.get(url = powerURL) 
                         except requests.exceptions.RequestException as e:
                                 print ("Error due to:", e) 
+                                return
                         jsonData = json.loads(r.text)
 
                         self.currentPower = jsonData["currentPowerUsageWatts"]

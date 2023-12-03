@@ -196,9 +196,11 @@ class DisplayDriver:
                 else:
                         watts = int(self.power.currentPower)
                         renderPowerText = powerText.render(str(watts) + " Watts", True, self._font_color)
-                stalePower = int(time.time()) + (60 * 10)
-                if int(self.power.currentPowerEpochTimeSeconds) > stalePower :
+                stalePower = int(time.time()) - (60 * 10)
+                print("Current Power API Epoch: " + str(self.power.currentPowerEpochTimeSeconds) + " will be stale after: " + str(stalePower))
+                if int(self.power.currentPowerEpochTimeSeconds) < stalePower :
                         renderPowerText = powerText.render(" - ", True, self._font_color)
+                        print("Power API is stale")
 
                 renderPowerBanner = powerBanner.render("Power Usage:", True, self._font_color)
                 (rtx, rty) = renderPowerBanner.get_size()
