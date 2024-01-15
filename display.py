@@ -70,9 +70,9 @@ class DisplayDriver:
         # x_multiple / y_multiple are used to move the text to midpoint or section of the screen.
         # x_offset / y_offset are used to fine tune movements
         # self is required to blit to the screen
-        def __render_text(self, text, text_size, x_multiple, x_offset, y_multiple, y_offset):
+        def __render_text(self, label, text_size, x_multiple, x_offset, y_multiple, y_offset):
                 text = pygame.font.SysFont(self._font, int(self._ymax * text_size), bold=1)
-                rendertext = text.render(text, True, self._font_color)
+                rendertext = text.render(label, True, self._font_color)
                 (rtx, rty) = rendertext.get_size()
 	
                 self._screen.blit(rendertext, (self._borders[0]+(self._xmax*x_multiple-(int(rtx/2) + x_offset)), int(self._ymax * y_multiple)+ y_offset))
