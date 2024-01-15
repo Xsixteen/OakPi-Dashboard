@@ -191,18 +191,23 @@ class DisplayDriver:
                 self._screen.blit(rendertext, (self._borders[0]+(self._xmax*0.16-(int(rtx/2))), int(self._ymax - ty - 30)))
                 self._screen.blit(temp, (self._borders[0]+30,int(self._ymax - ty)))
                 self._screen.blit(ftext, (self._borders[0]+20+tx+15, int(self._ymax - ty + 5)))
-                
-                # Wind / Wind Gusts
-                self.__render_text("Wind/Gust",0.05, 0.16, self._borders[0], 0.1, 100)
 
                 wind = self.weatherObj.currentWind
                 windMph = round(wind * 2.2369)
 
                 windGust = self.weatherObj.currentWindGust
                 windGustMph = round(windGust * 2.2369)
-
-                windText = windMph + " Mph / Gust " + windGustMph + " Mph"
-                self.__render_text(windText,0.05, 0.16, self._borders[0], 0.1, 125)
+                if windGust == -1:
+                        windText = str(windMph) + " MPH"
+                else: 
+                        windText = str(windMph) + " MPH / Gust " + str(windGustMph) + " MPH"
+                self.__render_text(windText,0.04, 0.16, self._borders[0], 0.1, 125)
+                
+                if windGust == -1:
+                        windLabel = "Current Wind" 
+                else:
+                        windLabel = "Wind/Gust"
+                self.__render_text(windLabel, 0.05, 0.16, self._borders[0], 0.1, 100)
 
                 # Hold off for now
                 # precip = pygame.font.SysFont(self._font, int(self._ymax * 0.07), bold=1)
