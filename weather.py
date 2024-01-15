@@ -37,7 +37,9 @@ class Weather:
 
                         self.lasttemp = json.dumps(jsonTempK)
                         self.currentWind = jsonData["wind"]["speed"]
-                        self.currentWindGust = jsonData["wind"]["gust"]
+                        if 'gust' in self.currentWind:
+                                self.currentWindGust = jsonData["wind"]["gust"]
+                                
                         self.nextupdate = int(time.time()) + (60 * 10)
                         print("Next API Update",self.nextupdate)
                 return self.lasttemp

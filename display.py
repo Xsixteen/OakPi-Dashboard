@@ -193,12 +193,12 @@ class DisplayDriver:
                 self._screen.blit(ftext, (self._borders[0]+20+tx+15, int(self._ymax - ty + 5)))
                 
                 # Wind / Wind Gusts
-                __render_text(self, "Current Wind/Gust:", 0.16, self._borders[0], 0.1, 85)
-
+                self.__render_text("Current Wind/Gust:",0.05, 0.16, self._borders[0], 0.1, 85)
+                            
 
                 # Hold off for now
                 # precip = pygame.font.SysFont(self._font, int(self._ymax * 0.07), bold=1)
-                # renderPrecip = precip.render("Precipitation:", True, self._font_color)
+                # renderPrecip = precip.render("Precipitation:" , True, self._font_color)
                 # (rtx, rty) = renderPrecip.get_size()
                 #self._screen.blit(renderPrecip, (self._borders[0]+(self._xmax*0.16-(int(rtx/2))), int(self._ymax*0.1)+5))
 
