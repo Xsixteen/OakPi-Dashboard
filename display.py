@@ -67,10 +67,12 @@ class DisplayDriver:
                         print("Update Error + {}".format(str(err)))
 
         def __render_gateimage(self):
-                gateimg = pygame.image.load('./images/latest_image.jpg')
-                gateimg_small = pygame.transform.scale(gateimg, (320, 180))
-  
-                self._screen.blit(gateimg_small,(int((self._xmax*0.33+5)),int(self._borders[0]+45)))
+                path = './images/latest_image.jpg'
+                if os.path.isfile(path):
+                        gateimg = pygame.image.load(path)
+                        gateimg_small = pygame.transform.scale(gateimg, (320, 180))
+        
+                        self._screen.blit(gateimg_small,(int((self._xmax*0.33+5)),int(self._borders[0]+45)))
 
         def __draw_buttons(self):
                 refresh = pygame.image.load('./icons/refresh.png')
