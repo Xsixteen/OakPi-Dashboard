@@ -194,7 +194,15 @@ class DisplayDriver:
                 
                 # Wind / Wind Gusts
                 self.__render_text("Wind/Gust",0.05, 0.16, self._borders[0], 0.1, 100)
-                            
+
+                wind = self.weatherObj.currentWind
+                windMph = round(wind * 2.2369)
+
+                windGust = self.weatherObj.currentWindGust
+                windGustMph = round(windGust * 2.2369)
+
+                windText = windMph + " Mph / Gust " + windGustMph + " Mph"
+                self.__render_text(windText,0.05, 0.16, self._borders[0], 0.1, 125)
 
                 # Hold off for now
                 # precip = pygame.font.SysFont(self._font, int(self._ymax * 0.07), bold=1)
