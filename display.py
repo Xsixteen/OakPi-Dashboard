@@ -193,7 +193,7 @@ class DisplayDriver:
                 self._screen.blit(ftext, (self._borders[0]+20+tx+15, int(self._ymax - ty + 5)))
                 
                 # Wind / Wind Gusts
-                self.__render_text("Current Wind/Gust:",0.05, 0.16, self._borders[0], 0.1, 85)
+                self.__render_text("Wind/Gust",0.05, 0.16, self._borders[0], 0.1, 100)
                             
 
                 # Hold off for now
@@ -219,7 +219,7 @@ class DisplayDriver:
                         renderPowerText = powerText.render(" - ", True, self._font_color)
                         print("Power API is stale")
 
-                renderPowerBanner = powerBanner.render("Power Usage:", True, self._font_color)
+                renderPowerBanner = powerBanner.render("Power Usage", True, self._font_color)
                 (rtx, rty) = renderPowerBanner.get_size()
                 self._screen.blit(renderPowerBanner, (self._borders[0]+(self._xmax*0.16-(int(rtx/2))), int(self._ymax*0.1)+5))
 
