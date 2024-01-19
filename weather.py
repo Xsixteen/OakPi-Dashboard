@@ -42,6 +42,8 @@ class Weather:
 
                         if 'gust' in jsonWind:
                                 self.currentWindGust = jsonWind["gust"]
+                        else:
+                                self.currentWindGust = -1
 
                         self.nextupdate = int(time.time()) + (60 * 10)
                         print("Next API Update",self.nextupdate)
