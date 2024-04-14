@@ -18,7 +18,10 @@ class Weather:
                 PARAMS = { 'appid':settings.api_key, 'q': settings.city }
                 if self.nextupdate < time.time():
                         print("Updating Weather information from API")
-                        r = requests.get(url = currentWeatherURL, params = PARAMS) 
+                        try: 
+                                r = requests.get(url = currentWeatherURL, params = PARAMS) 
+                        except requests.exceptions.ConnectionError:
+                                print("Connection Error")
                         jsonData = json.loads(r.text)
                         jsonMain = jsonData["main"]
                         jsonTempK = jsonMain["temp"]
