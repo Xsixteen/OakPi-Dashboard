@@ -6,7 +6,7 @@ import time
 class Power:
         def __init__(self):
                 self.nextupdate = -1
-                self.currentPower = None
+                self.currentPower = 0
                 self.forecastupdate = -1
                 self.currentPowerEpochTimeSeconds = -1
 
