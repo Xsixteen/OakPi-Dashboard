@@ -20,34 +20,34 @@ class Weather:
                         print("Updating Weather information from API")
                         try: 
                                 r = requests.get(url = currentWeatherURL, params = PARAMS) 
+
+                                jsonData = json.loads(r.text)
+                                jsonMain = jsonData["main"]
+                                jsonTempK = jsonMain["temp"]
+
+                                if not 'rain' in jsonData or len(jsonData['rain']) == 0:
+                                        print("No Rain Precip detected")
+                                else:
+                                        jsonRain = jsonData["rain"]
+                                        self.rain3h = jsonRain["1h"]
+
+                                if not 'snow' in jsonData or len(jsonData['snow']) == 0:
+                                        print("No Snow Precip detected")
+                                else:
+                                        jsonSnow = jsonData["snow"]
+                                        self.snow1h = jsonSnow["1h"]
+
+                                self.lasttemp = json.dumps(jsonTempK)
+
+                                jsonWind = jsonData["wind"]
+                                self.currentWind = jsonWind["speed"]
+
+                                if 'gust' in jsonWind:
+                                        self.currentWindGust = jsonWind["gust"]
+                                else:
+                                        self.currentWindGust = -1
                         except requests.exceptions.ConnectionError:
                                 print("Connection Error")
-                        jsonData = json.loads(r.text)
-                        jsonMain = jsonData["main"]
-                        jsonTempK = jsonMain["temp"]
-
-                        if not 'rain' in jsonData or len(jsonData['rain']) == 0:
-                                print("No Rain Precip detected")
-                        else:
-                                jsonRain = jsonData["rain"]
-                                self.rain3h = jsonRain["1h"]
-
-                        if not 'snow' in jsonData or len(jsonData['snow']) == 0:
-                                print("No Snow Precip detected")
-                        else:
-                                jsonSnow = jsonData["snow"]
-                                self.snow1h = jsonSnow["1h"]
-
-                        self.lasttemp = json.dumps(jsonTempK)
-
-                        jsonWind = jsonData["wind"]
-                        self.currentWind = jsonWind["speed"]
-
-                        if 'gust' in jsonWind:
-                                self.currentWindGust = jsonWind["gust"]
-                        else:
-                                self.currentWindGust = -1
-
                         self.nextupdate = int(time.time()) + (60 * 10)
                         print("Next API Update",self.nextupdate)
                 return self.lasttemp
